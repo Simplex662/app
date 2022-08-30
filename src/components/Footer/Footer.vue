@@ -56,7 +56,7 @@
                 </div>
                 <div class="footerItem">
                     <h4>帮助中心</h4>
-                    <img src="@/assets/image/wx_cz.jpg">
+                    <img src="@/assets/image/app_qr.png">
                 </div>
             </div>
             <div class="copyright">
