@@ -6,7 +6,7 @@ const states = {
 const actions = {
     async categoryList(context) {
         let result = await reqCategoryList();
-        console.log(result)
+        // console.log(result)
         if (result.code == 200){
            context.commit('CATEGORYLIST',result.data)
         }
@@ -15,7 +15,6 @@ const actions = {
 const mutations = {
     'CATEGORYLIST':(state,value)=>{
         state.categoryList = value
-        // console.log(value)
     }
 };
 const getters = {};

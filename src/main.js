@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import vueRouter from 'vue-router'
 import router from './router' //引入路由器
-import TypeNav from '@/pages/Home/TypeNav'
+import TypeNav from '@/components/TypeNav'
 
 //测试引入全局组件
 // import TypeNav from "@/pages/Home/TypeNav";

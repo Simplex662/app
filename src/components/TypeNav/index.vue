@@ -66,24 +66,20 @@
         methods: {
             // ...ma['home',{categoryList:'categoryList'}],
             //三级导航节流操作，防止用户操作频繁出现解析问题
-            changeActive(){
-                throttle(function(index){
+            changeActive: throttle(function(index){
                     //获取当前元素索引值，使当前元素获得 active 样式
+                    console.log(index)
                     this.$data.Active = index
                 },50)
-            }
         },
         mounted() {
-            //获得三级路由数据
-            console.log(this.$store)
+            // 获得三级路由数据
+            // console.log(this.$store)
             // ...ma['home',{categoryList:'categoryList'}]
             this.$store.dispatch('home/categoryList','categoryList')
         },
         computed:{
-            // ...ms('home',{ categoryList:'categoryList' })
-            categoryList(){
-                this.$store.state.home.categoryList
-            }
+            ...ms('home',{ categoryList:'categoryList' })
         }
     }
 </script>
