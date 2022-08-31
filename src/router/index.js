@@ -1,4 +1,3 @@
-import vue from 'vue'
 import vueRouter from 'vue-router'
 
 import Home from '@/pages/Home'
@@ -47,6 +46,7 @@ export default new vueRouter({
             meta:{showFooter:false}
         },
         {
+            name:'search',
             path: '/search',
             component: Search,
             meta:{showFooter:true},

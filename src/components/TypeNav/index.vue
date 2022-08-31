@@ -1,41 +1,43 @@
 <template>
     <div class="type-nav">
         <div class="container">
-            <div @mouseleave=" changeActive(-1)">
-                <h2 class="all">全部商品分类</h2>
-                <!--  三级联动模块  -->
-                <!-- 一级分类 -->
-                <div class="sort">
-                    <div class="all-sort-list2">
-                        <div class="item"
-                             :class="{active:Active == index}"
-                             v-for="(c1,index) in categoryList"
-                             :key="c1.categoryId"
-                             @mouseenter="changeActive(index)">
-                            <h3>
-                                <a href="">{{ c1.categoryName }}</a>
-                            </h3>
-                            <!--  二三级分类  -->
-                            <div class="item-list clearfix">
-                                <div class="subitem" v-for="c2 in c1.categoryChild" :key="c2.categoryId">
-                                    <dl class="fore">
-                                        <dt>
-                                            <a href="">{{ c2.categoryName }}</a>
-                                        </dt>
-                                        <dd>
-                                            <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
-                                                <a href="">{{ c3.categoryName }}</a>
-                                            </em>
-                                        </dd>
-                                    </dl>
+            <transition name="sort">
+                <div @mouseleave="leaveShow" @mouseenter="enterShow">
+                    <h2 class="all">全部商品分类</h2>
+                    <!--  三级联动模块  -->
+                    <!-- 一级分类 -->
+                    <div class="sort" v-show="show">
+                        <!--l利用事件的委派+编程式导航-->
+                        <div class="all-sort-list2" @click="goSearch">
+                            <div class="item"
+                                 :class="{active:Active == index}"
+                                 v-for="(c1,index) in categoryList"
+                                 :key="c1.categoryId"
+                                 @mouseenter="changeActive(index)"
+                            >
+                                <h3>
+                                    <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{ c1.categoryName }}</a>
+                                </h3>
+                                <!--  二三级分类  -->
+                                <div class="item-list clearfix">
+                                    <div class="subitem" v-for="c2 in c1.categoryChild" :key="c2.categoryId">
+                                        <dl class="fore">
+                                            <dt>
+                                                <a :data-categoryName="c2.categoryName" :data-category2Id="c2.categoryId">{{ c2.categoryName }}</a>
+                                            </dt>
+                                            <dd>
+                                                <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
+                                                    <a :data-categoryName="c3.categoryName" :data-category3Id="c3.categoryId">{{ c3.categoryName }}</a>
+                                                </em>
+                                            </dd>
+                                        </dl>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-
+            </transition>
             <nav class="nav">
                 <a href="###">服装城</a>
                 <a href="###">美妆馆</a>
@@ -60,23 +62,60 @@
         name: "TypeNav",
         data(){
             return{
-                Active:-1
+                Active:-1,
+                show:true,
             }
         },
         methods: {
             // ...ma['home',{categoryList:'categoryList'}],
             //三级导航节流操作，防止用户操作频繁出现解析问题
-            changeActive: throttle(function(index){
+            changeActive(index){
                     //获取当前元素索引值，使当前元素获得 active 样式
-                    console.log(index)
                     this.$data.Active = index
-                },50)
+            },
+            goSearch(event){
+                //节点的dataset属性，可以自定义获取节点的自定义属性与属性值
+                let {categoryname,category1id,category2id,category3id} = event.target.dataset
+                if(categoryname){
+                    //三级分类 a 标签
+                    //整理路由跳转的参数
+
+                    let location = { name: 'search' }
+                    let query = { categoryName:categoryname }
+
+                    if (category1id){
+                        query.category1Id = category1id;
+                    }else if (category2id){
+                        query.category2Id = category2id;
+                    }else{
+                        query.category3Id = category3id;
+                    }
+                    // console.log(location,query)
+                    //整理参数
+                    location.query = query;
+                    //路由传参
+                    this.$router.push(location)
+                }
+            },
+            enterShow(){
+                    this.show = true
+            },
+            leaveShow(){
+                this.index = -1
+                if (this.$route.path != '/home'){
+                    this.show = false
+                }
+            }
         },
         mounted() {
             // 获得三级路由数据
             // console.log(this.$store)
-            // ...ma['home',{categoryList:'categoryList'}]
+            // ...ma('home',{categoryList:'categoryList'})
             this.$store.dispatch('home/categoryList','categoryList')
+            //如果不是home组件 ，隐藏 三级联动
+            if (this.$route.path != '/home'){
+                this.show = false
+            }
         },
         computed:{
             ...ms('home',{ categoryList:'categoryList' })
@@ -128,7 +167,7 @@
                 position: absolute;
                 background: #fafafa;
                 z-index: 999;
-
+                overflow: hidden;
                 .all-sort-list2 {
                     .item {
                         h3 {
@@ -205,6 +244,20 @@
                         }
                     }
                 }
+            }
+
+            //过渡动画样式
+            //动画开始状态
+            .sort-enter{
+                height: 0px;
+            }
+            //动画结束状态
+            .sort-enter-to{
+                height: 461px;
+            }
+
+            .sort-enter-active{
+                transition: all .5s linear;
             }
         }
     }
