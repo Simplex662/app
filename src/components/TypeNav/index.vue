@@ -111,7 +111,7 @@
             // 获得三级路由数据
             // console.log(this.$store)
             // ...ma('home',{categoryList:'categoryList'})
-            this.$store.dispatch('home/categoryList','categoryList')
+            // this.$store.dispatch('home/categoryList','categoryList')
             //如果不是home组件 ，隐藏 三级联动
             if (this.$route.path != '/home'){
                 this.show = false
