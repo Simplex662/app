@@ -4,20 +4,11 @@
         <div class="sortList clearfix">
             <div class="center">
                 <!--banner轮播-->
-                <div class="swiper-container" id="mySwiper">
+                <div class="swiper-container" id="mySwiper" >
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                            <img src="./images/banner1.jpg"/>
+                        <div class="swiper-slide"  v-for="carouse in bannerList" :key="carouse.id">
+                            <img :src="carouse.imgUrl"/>
                         </div>
-                        <!--<div class="swiper-slide">
-                            <img src="./images/banner2.jpg"/>
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="./images/banner3.jpg"/>
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="./images/banner4.jpg"/>
-                        </div>-->
                     </div>
                     <!-- 如果需要分页器 -->
                     <div class="swiper-pagination"></div>
@@ -111,13 +102,39 @@
 </template>
 
 <script>
+    import {mapState as ms} from 'vuex'
+    import Swiper from 'swiper'
+
     export default {
         name: "ListContainer",
         mounted() {
-            this.$store.dispatch('home/getBannerList','getBannerList')
-        },
-        components:{
+            this.$store.dispatch('home/getBannerList','getBannerList');
+            setTimeout(()=>{
+                var mySwiper = new Swiper ('.swiper-container', {
+                    // direction: 'vertical', // 垂直切换选项
+                    loop: true, // 循环模式选项
 
+                    // 如果需要分页器
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable:true,
+                    },
+
+                    // 如果需要前进后退按钮
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+
+                    // 如果需要滚动条
+                    scrollbar: {
+                        el: '.swiper-scrollbar',
+                    },
+                })
+            },200)
+        },
+        computed:{
+            ...ms('home',{ bannerList:'bannerList' })
         }
     }
 </script>

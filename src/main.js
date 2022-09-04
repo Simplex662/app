@@ -12,6 +12,8 @@ import TypeNav from '@/components/TypeNav'
 import store from "@/store"
 //引入mockServe
 import MockServe from '@/mock/mockServe'
+// 引入 swiper 样式
+import "swiper/css/swiper.min.css"
 
 Vue.config.productionTip = false
 
