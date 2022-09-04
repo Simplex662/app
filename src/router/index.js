@@ -47,12 +47,12 @@ export default new vueRouter({
         },
         {
             name:'search',
-            path: '/search',
+            path: '/search/:keyword?',//
             component: Search,
             meta:{showFooter:true},
             props:($route)=>{
                 return{
-                    keyword:$route.query.keyword
+                    keyword:$route.params.keyword
                 }
             }
         },

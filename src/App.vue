@@ -18,7 +18,7 @@ export default {
   },
   mounted() {
     //请求写在 App组件中，请求只发送一次，提高性能
-    this.$store.dispatch('home/categoryList','categoryList')
+    this.$store.dispatch('home/getCategoryList','categoryList')
   }
 }
 </script>

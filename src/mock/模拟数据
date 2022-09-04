@@ -1,0 +1,3 @@
+json数据（记得格式化，不能有空格）
+需要安装 mockjs：cnpm install mockjs
+mock数据需要的图片放置在public文件夹中，打包时会把资源自动打包进dist文件中

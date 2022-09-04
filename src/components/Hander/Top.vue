@@ -52,7 +52,13 @@
         },
         methods: {
             toSearch(){
-                this.$router.push({path:'/search',query:{keyword:this.keyword}})
+                //使用params参数时需要为route配置 name
+                //params参数可以传递或者不传，当字符串为空时，可以使用 undefined 不进行传参
+                let location ={name:'search',params:{keyword:this.keyword || undefined}};
+                if (this.$route.query) {
+                    location.query = this.$route.query;
+                }
+                this.$router.push(location)
             }
         }
     }

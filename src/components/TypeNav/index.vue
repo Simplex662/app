@@ -93,6 +93,9 @@
                     // console.log(location,query)
                     //整理参数
                     location.query = query;
+                    if (this.$route.params){
+                        location.params = this.$route.params
+                    }
                     //路由传参
                     this.$router.push(location)
                 }

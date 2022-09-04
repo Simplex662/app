@@ -10,6 +10,8 @@ import TypeNav from '@/components/TypeNav'
 // console.log('main.js:'+reqCategoryList());
 //引入仓库
 import store from "@/store"
+//引入mockServe
+import MockServe from '@/mock/mockServe'
 
 Vue.config.productionTip = false
 
