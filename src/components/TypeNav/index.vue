@@ -1,11 +1,12 @@
 <template>
     <div class="type-nav">
         <div class="container">
-            <transition name="sort">
-                <div @mouseleave="leaveShow" @mouseenter="enterShow">
-                    <h2 class="all">全部商品分类</h2>
-                    <!--  三级联动模块  -->
-                    <!-- 一级分类 -->
+
+            <div @mouseleave="leaveShow" @mouseenter="enterShow">
+                <h2 class="all">全部商品分类</h2>
+                <!--  三级联动模块  -->
+                <!-- 一级分类 -->
+                <transition name="sort">
                     <div class="sort" v-show="show">
                         <!--l利用事件的委派+编程式导航-->
                         <div class="all-sort-list2" @click="goSearch">
@@ -16,18 +17,21 @@
                                  @mouseenter="changeActive(index)"
                             >
                                 <h3>
-                                    <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{ c1.categoryName }}</a>
+                                    <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{
+                                        c1.categoryName }}</a>
                                 </h3>
                                 <!--  二三级分类  -->
                                 <div class="item-list clearfix">
                                     <div class="subitem" v-for="c2 in c1.categoryChild" :key="c2.categoryId">
                                         <dl class="fore">
                                             <dt>
-                                                <a :data-categoryName="c2.categoryName" :data-category2Id="c2.categoryId">{{ c2.categoryName }}</a>
+                                                <a :data-categoryName="c2.categoryName"
+                                                   :data-category2Id="c2.categoryId">{{ c2.categoryName }}</a>
                                             </dt>
                                             <dd>
                                                 <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
-                                                    <a :data-categoryName="c3.categoryName" :data-category3Id="c3.categoryId">{{ c3.categoryName }}</a>
+                                                    <a :data-categoryName="c3.categoryName"
+                                                       :data-category3Id="c3.categoryId">{{ c3.categoryName }}</a>
                                                 </em>
                                             </dd>
                                         </dl>
@@ -36,8 +40,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </transition>
+                </transition>
+            </div>
             <nav class="nav">
                 <a href="###">服装城</a>
                 <a href="###">美妆馆</a>
@@ -53,59 +57,59 @@
 </template>
 
 <script>
-    import {mapActions as ma,mapState as ms} from 'vuex'
+    import {mapActions as ma, mapState as ms} from 'vuex'
     //引入lodsh
     //最好的引入方式：按需引入
     import throttle from 'lodash';
 
     export default {
         name: "TypeNav",
-        data(){
-            return{
-                Active:-1,
-                show:true,
+        data() {
+            return {
+                Active: -1,
+                show: true,
             }
         },
         methods: {
             // ...ma['home',{categoryList:'categoryList'}],
             //三级导航节流操作，防止用户操作频繁出现解析问题
-            changeActive(index){
-                    //获取当前元素索引值，使当前元素获得 active 样式
-                    this.$data.Active = index
+            changeActive(index) {
+                //获取当前元素索引值，使当前元素获得 active 样式
+                this.$data.Active = index
             },
-            goSearch(event){
+            goSearch(event) {
                 //节点的dataset属性，可以自定义获取节点的自定义属性与属性值
-                let {categoryname,category1id,category2id,category3id} = event.target.dataset
-                if(categoryname){
+                let {categoryname, category1id, category2id, category3id} = event.target.dataset
+                if (categoryname) {
                     //三级分类 a 标签
                     //整理路由跳转的参数
 
-                    let location = { name: 'search' }
-                    let query = { categoryName:categoryname }
+                    let location = {name: 'search'}
+                    let query = {categoryName: categoryname}
 
-                    if (category1id){
+                    if (category1id) {
                         query.category1Id = category1id;
-                    }else if (category2id){
+                    } else if (category2id) {
                         query.category2Id = category2id;
-                    }else{
+                    } else {
                         query.category3Id = category3id;
                     }
                     // console.log(location,query)
                     //整理参数
                     location.query = query;
-                    if (this.$route.params){
+                    if (this.$route.params) {
                         location.params = this.$route.params
                     }
                     //路由传参
                     this.$router.push(location)
                 }
             },
-            enterShow(){
-                    this.show = true
+            enterShow() {
+                this.show = true
             },
-            leaveShow(){
-                this.index = -1
-                if (this.$route.path != '/home'){
+            leaveShow() {
+                this.index = -1;
+                if (this.$route.path != '/home') {
                     this.show = false
                 }
             }
@@ -116,17 +120,18 @@
             // ...ma('home',{categoryList:'categoryList'})
             // this.$store.dispatch('home/categoryList','categoryList')
             //如果不是home组件 ，隐藏 三级联动
-            if (this.$route.path != '/home'){
+            if (this.$route.path != '/home') {
                 this.show = false
             }
         },
-        computed:{
-            ...ms('home',{ categoryList:'categoryList' })
+        computed: {
+            ...ms('home', {categoryList: 'categoryList'})
         }
     }
 </script>
 
 <style scoped lang="less">
+
     .type-nav {
         border-bottom: 2px solid #e1251b;
 
@@ -136,7 +141,7 @@
             display: flex;
             position: relative;
 
-            .active{
+            .active {
                 background-color: burlywood;
             }
 
@@ -170,7 +175,8 @@
                 position: absolute;
                 background: #fafafa;
                 z-index: 999;
-                overflow: hidden;
+                /*overflow: hidden;*/
+
                 .all-sort-list2 {
                     .item {
                         h3 {
@@ -247,19 +253,21 @@
                         }
                     }
                 }
+
             }
 
             //过渡动画样式
             //动画开始状态
-            .sort-enter{
-                height: 0px;
-            }
-            //动画结束状态
-            .sort-enter-to{
-                height: 461px;
+            .sort-enter {
+                opacity: 0;
             }
 
-            .sort-enter-active{
+            //动画结束状态
+            .sort-enter-to {
+                opacity: 1;
+            }
+
+            .sort-enter-active {
                 transition: all .5s linear;
             }
         }

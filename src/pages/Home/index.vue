@@ -5,7 +5,7 @@
         <TodayRecommend/>
         <Rank/>
         <Like/>
-        <Floor/>
+        <Floor v-for="floor in floorList" :key="floor.id" :list="floor"/>
         <Brand/>
     </div>
 </template>
@@ -27,6 +27,14 @@
             Like,
             Floor,
             Brand
+        },
+        mounted() {
+            this.$store.dispatch('home/getFloorList','getFloorList')
+        },
+        computed:{
+            floorList(){
+                return this.$store.state.home.floorList
+            }
         }
     }
 </script>

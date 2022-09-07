@@ -6,7 +6,10 @@
                 <!--banner轮播-->
                 <div class="swiper-container" id="mySwiper" >
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide"  v-for="carouse in bannerList" :key="carouse.id">
+                        <div class="swiper-slide"
+                             v-for="carouse in bannerList"
+                             :key="carouse.id"
+                        >
                             <img :src="carouse.imgUrl"/>
                         </div>
                     </div>
@@ -109,32 +112,38 @@
         name: "ListContainer",
         mounted() {
             this.$store.dispatch('home/getBannerList','getBannerList');
-            setTimeout(()=>{
-                var mySwiper = new Swiper ('.swiper-container', {
-                    // direction: 'vertical', // 垂直切换选项
-                    loop: true, // 循环模式选项
-
-                    // 如果需要分页器
-                    pagination: {
-                        el: '.swiper-pagination',
-                        clickable:true,
-                    },
-
-                    // 如果需要前进后退按钮
-                    navigation: {
-                        nextEl: '.swiper-button-next',
-                        prevEl: '.swiper-button-prev',
-                    },
-
-                    // 如果需要滚动条
-                    scrollbar: {
-                        el: '.swiper-scrollbar',
-                    },
-                })
-            },200)
         },
         computed:{
             ...ms('home',{ bannerList:'bannerList' })
+        },
+        watch:{
+            //使用watch + nextTick 实现轮播图
+            //因为普通的watch无法保证 watch执行时，v-for已经执行完，加上nextTick 可以保证循环执行完之后在执行函数
+            bannerList(){
+                this.$nextTick(()=>{
+                    var mySwiper = new Swiper ('.swiper-container', {
+                        // direction: 'vertical', // 垂直切换选项
+                        loop: true, // 循环模式选项
+
+                        // 如果需要分页器
+                        pagination: {
+                            el: '.swiper-pagination',
+                            clickable:true,
+                        },
+
+                        // 如果需要前进后退按钮
+                        navigation: {
+                            nextEl: '.swiper-button-next',
+                            prevEl: '.swiper-button-prev',
+                        },
+
+                        // 如果需要滚动条
+                        scrollbar: {
+                            el: '.swiper-scrollbar',
+                        },
+                    })
+                })
+            }
         }
     }
 </script>
