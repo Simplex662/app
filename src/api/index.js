@@ -8,4 +8,6 @@ import mockRequest from "@/api/mockAjax"
 export const reqCategoryList = ()=>axiosInstance({url:'/product/getBaseCategoryList',method:'get'})
 export const reqGetBannerList = ()=> mockRequest({url:'/banner',method: 'get'})
 export const reqGetfloorsList = ()=> mockRequest({url:'/floors',method: 'get'})
+//params应该是个空对象
+export const reqGetSearchInfo = (params)=> axiosInstance({url:'/list',method:'POST',data:params})
 

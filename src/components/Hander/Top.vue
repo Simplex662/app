@@ -60,6 +60,11 @@
                 }
                 this.$router.push(location)
             }
+        },
+        mounted() {
+            this.$bus.$on("clearKeyword",()=>{
+                this.keyword = '';
+            });
         }
     }
 </script>

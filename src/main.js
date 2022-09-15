@@ -3,7 +3,7 @@ import App from './App.vue'
 import vueRouter from 'vue-router'
 import router from './router' //引入路由器
 import TypeNav from '@/components/TypeNav'
-
+import Carsouel from '@/components/Carsouel'
 //测试引入全局组件
 // import TypeNav from "@/pages/Home/TypeNav";
 // import {reqCategoryList} from "@/api";
@@ -14,6 +14,8 @@ import store from "@/store"
 import MockServe from '@/mock/mockServe'
 // 引入 swiper 样式
 import "swiper/css/swiper.min.css"
+//注册全局共享组件
+Vue.component(Carsouel.name,Carsouel)
 
 Vue.config.productionTip = false
 
@@ -24,5 +26,9 @@ Vue.use(vueRouter)
 new Vue({
   render: h => h(App),
   router,
-  store
+  store,
+  beforeCreate(){
+    //注册全局事件总线
+    Vue.prototype.$bus = this
+  }
 }).$mount('#app')
