@@ -16,11 +16,16 @@
             <li class="with-x" v-if="searchParams.categoryName">{{ searchParams.categoryName }} <i @click="removeSuiTag">×</i></li>
             <!--关键字的面包屑-->
             <li class="with-x" v-if="searchParams.keyword">{{ searchParams.keyword }} <i @click="removeKeywordTag">×</i></li>
+            <!-- 品牌的面包屑（使用split 将字符串切割成数组，并用 ：分开，使用数组下标为 1 的元素） -->
+            <li class="with-x" v-if="searchParams.trademark">{{ searchParams.trademark.split(":")[1] }} <i @click="removeTrademark">×</i></li>
+            <!--品牌属性面包屑-->
+            <li class="with-x" v-for="(attr,index) in searchParams.props" :key="index">{{ attr.split(":")[1] }} <i @click="removeAttr(index)">×</i></li>
+
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector :attrsList="attrsList" :goodsList="goodsList" :trademarkList="trademarkList"/>
+        <SearchSelector @trademarkInfo="trademarkInfo"  @sttrInfo="sttrInfo"/>
 
         <!-- details  -->
         <div class="details clearfix">
@@ -28,8 +33,22 @@
             <div class="navbar-inner filter">
               <!--价格结构-->
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{active:isOne}" @click="changeOrder('1')">
+                  <a href="#">综合 <i class="iconfont"
+                                    v-if="isOne"
+                                    :class="{
+                                      'icon-jiantou_xiangxia':isDesc,
+                                      'icon-jiantou_xiangshang':isAsc
+                                     }"
+                                    ></i></a>
+                </li>
+                <li :class="{active:isTwo}" @click="changeOrder('2')">
+                  <a href="#">价格 <i class="iconfont"
+                                      v-if="isTwo"
+                                      :class="{'icon-jiantou_xiangxia':isDesc,
+                                      'icon-jiantou_xiangshang':isAsc
+                                      }"
+                                    ></i></a>
                 </li>
                 <li>
                   <a href="#">销量</a>
@@ -39,12 +58,6 @@
                 </li>
                 <li>
                   <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
                 </li>
               </ul>
             </div>
@@ -78,35 +91,19 @@
             </ul>
           </div>
           <!--分页器-->
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <!--
+              pageNo:当前第几个
+              pageSize:代表一页展示多少数据
+              total:总共多少数据
+              continues:连续页码个数
+          -->
+            <Pagination  :pageNo="searchParams.pageNo"
+                         :pageSize="searchParams.pageSize"
+                         :total="total"
+                         :continues="5"
+                         @getPageNo="getPageNo"
+            />
+
         </div>
       </div>
     </div>
@@ -115,7 +112,7 @@
 
 <script>
   import SearchSelector from './SearchSelector/SearchSelector'
-  import { mapGetters as mg } from 'vuex'
+  import { mapGetters as mg , mapState as ms} from 'vuex'
 
   export default {
     name: 'Search',
@@ -136,14 +133,14 @@
           // prop 参数
           props:[],
           // order 排序
-          order:'',
+          order:'1:desp',
           // pageNo 页码
           pageNo:1,
           // pageSize 每页数量
-          pageSize:3,
+          pageSize:10,
           // trademark 商品类型
-          trademark:""
-        }
+          trademark:"",
+        },
       }
     },
     components: {
@@ -155,7 +152,23 @@
         this.getData();
       },
     computed:{
-      ...mg('search',{ attrsList:'attrsList', goodsList:'goodsList', trademarkList:'trademarkList' })
+      ...mg('search',{  goodsList:'goodsList' }),
+      total(){
+        return this.$store.state.search.searchList.total
+      },
+      isOne(){
+        return this.searchParams.order.indexOf('1') != -1
+      },
+      isTwo(){
+        return this.searchParams.order.indexOf('2') != -1
+      },
+      isDesc(){
+        return this.searchParams.order.indexOf('desp') != -1
+      },
+      isAsc(){
+        return this.searchParams.order.indexOf('asp') != -1
+
+      }
     },
     beforeMount(){
       //Object.assign:ES6 语法，合并对象
@@ -165,14 +178,13 @@
     watch:{
       $route(newValue){
         //再次搜索时 参数发生变化，重新合并参数
-        Object.assign(this.searchParams,this.$route.params,this.$route.query)
-        console.log(this.searchParams)
+        Object.assign(this.searchParams,this.$route.params,this.$route.query);
         //监视路由数据发生改变时重新发送请求
         this.getData();
         //发完请求后制空 。
-        this.searchParams.category1Id = undefined;
-        this.searchParams.category2Id = undefined;
-        this.searchParams.category3Id = undefined;
+        this.searchParams.category1Id = '';
+        this.searchParams.category2Id = '';
+        this.searchParams.category3Id = '';
       }
     },
     methods:{
@@ -183,12 +195,16 @@
       //移除分类标签面包屑
       removeSuiTag(){
         //删除 面包屑标签
+        //设置成空字符串会发给后台，但没必要，而值为undefined 不会发个后台
         this.searchParams.categoryName = undefined;
+        this.searchParams.category1Id = undefined;
+        this.searchParams.category2Id = undefined;
+        this.searchParams.category3Id = undefined;
         //重新发送数据
         this.getData();
         //更新链接
-        if ( this.$route.query ) {
-          this.$router.push({ name:'search', query:this.$route.query })
+        if ( this.$route.params ) {
+          this.$router.push({ name:'search', params:this.$route.params })
         }
       },
       //移除关键字面包屑
@@ -196,18 +212,65 @@
         this.searchParams.keyword = undefined;
         this.getData();
         //注册全局事件，清除 Hander 组件中搜索关键字
-        this.$bus.$emit('clearKeyword')
+        this.$bus.$emit('clearKeyword');
 
         //更新链接
         if (this.$route.query) {
-          this.$router.push({ name:'search', query:this.$route.query })
+          this.$router.push({ name:'search', query:this.$route.query });
         }
+      },
+      removeTrademark(){
+        this.searchParams.trademark = undefined;
+        this.getData()
+        //
+      },
+      //移除品牌属性面包屑
+      removeAttr(index){
+        this.searchParams.props.splice(index);
+        this.getData();
+      },
+      //品牌数据接收
+      trademarkInfo(trademark){
+        this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
+        this.getData();
+      },
+      // 品牌属性数据 接收
+      sttrInfo(attr,attrValue){
+        console.log(attr,attrValue);
+        let props = `${attr.attrId}:${attrValue}:${attr.attrName}`;
+        if (this.searchParams.props.indexOf(props) == -1){
+          this.searchParams.props.push(props)
+        }
+        this.getData();
+      },
+      //排序操作
+      changeOrder(flag){
+        //获得原始数据
+        let _order = this.searchParams.order;
+        let orderIndex = _order.split(':')[0];
+        let orderValue = _order.split(':')[1];
+        let newOrder = '';
+        //排序操作
+        if (flag==orderIndex){
+          newOrder = `${orderIndex}:${orderValue=='desp' ? 'asp':'desp'}`;
+        }else {
+          newOrder = `${flag}:desp`;
+        }
+        console.log(newOrder)
+        //数据修改
+        this.searchParams.order = newOrder;
+        this.getData()
+      },
+      getPageNo(page){
+        console.log(page)
+        this.searchParams.pageNo = page;
+        this.getData()
       }
     }
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
   .main {
     margin: 10px 0;
 
@@ -463,8 +526,9 @@
               margin-left: 0;
               margin-bottom: 0;
               vertical-align: middle;
-              width: 490px;
+              /*width:520px;*/
               float: left;
+              display:flex;
 
               li {
                 line-height: 18px;

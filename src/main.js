@@ -2,9 +2,10 @@ import Vue from 'vue'
 import App from './App.vue'
 import vueRouter from 'vue-router'
 import router from './router' //引入路由器
+//测试引入全局组件
 import TypeNav from '@/components/TypeNav'
 import Carsouel from '@/components/Carsouel'
-//测试引入全局组件
+import Pagination from '@/components/Pagination'
 // import TypeNav from "@/pages/Home/TypeNav";
 // import {reqCategoryList} from "@/api";
 // console.log('main.js:'+reqCategoryList());
@@ -16,6 +17,7 @@ import MockServe from '@/mock/mockServe'
 import "swiper/css/swiper.min.css"
 //注册全局共享组件
 Vue.component(Carsouel.name,Carsouel)
+Vue.component(Pagination.name,Pagination)
 
 Vue.config.productionTip = false
 

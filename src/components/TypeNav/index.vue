@@ -171,10 +171,11 @@
                 left: 0;
                 top: 45px;
                 width: 210px;
-                height: 461px;
+                /*height: 461px;*/
                 position: absolute;
                 background: #fafafa;
                 z-index: 999;
+                display: flex;
                 /*overflow: hidden;*/
 
                 .all-sort-list2 {

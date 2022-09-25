@@ -3,7 +3,7 @@
     <div class="type-wrap logo">
       <div class="fl key brand">品牌</div>
       <div class="value logos">
-        <ul class="logo-list" v-for="trademark in trademarkList" :key="trademark.tmId">
+        <ul class="logo-list" v-for="trademark in trademarkList" :key="trademark.tmId" @click="trademarkHandler(trademark)">
           <li>{{ trademark.tmName }}</li>
         </ul>
       </div>
@@ -12,11 +12,11 @@
         <a href="javascript:void(0);">更多</a>
       </div>
     </div>
-    <div class="type-wrap" v-for="attr in attrsList" :key="attr.attrId">
+    <div class="type-wrap" v-for="attr in attrsList" :key="attr.attrId" >
       <div class="fl key">{{ attr.attrName }}</div>
       <div class="fl value">
         <ul class="type-list" >
-          <li  v-for="(attrValue,index) in attr.attrValueList" :key="index">
+          <li  v-for="(attrValue,index) in attr.attrValueList" :key="index" @click="sendSttrInfo(attr,attrValue)">
             <a> {{ attrValue}} </a>
           </li>
 
@@ -28,9 +28,25 @@
 </template>
 
 <script>
+  import {mapGetters as mg} from 'vuex'
+
   export default {
-    trademarkListname: 'SearchSelector',
-    props:['trademarkList','goodsList','attrsList']
+    name: 'SearchSelector',
+    // props:['trademarkList','goodsList','attrsList'],
+    computed:{
+      ...mg('search', { trademarkList:'trademarkList',attrsList:'attrsList' })
+    },
+    methods:{
+      trademarkHandler(trademark){
+        //信息需要给父组件传过去
+        // console.log(trademark)
+        this.$emit("trademarkInfo",trademark)
+      },
+      sendSttrInfo(attr,attrValue){
+        //向父组件发送 品牌属性 数据
+        this.$emit("sttrInfo",attr,attrValue)
+      }
+    }
   }
 </script>
 
