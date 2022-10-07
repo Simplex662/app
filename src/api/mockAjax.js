@@ -13,7 +13,7 @@ var mockRequest = axios.create({
     timeout:3000
 });
 
-//请求拦截器，请求之前做一些事
+//请求拦截器，请求之前做一些事:进度条
 mockRequest.interceptors.request.use(config=>{
     nprogress.start()
     return config

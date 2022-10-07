@@ -1,10 +1,6 @@
 import vueRouter from 'vue-router'
-
-import Home from '@/pages/Home'
-import Login from '@/pages/Login'
-import Register from '@/pages/Register'
-import Search from '@/pages/Search'
-
+//引入路由
+import routes from './routes'
 // vue.use(vueRouter)
 //保存VueRouter原型上的 push | replace 方法
 let originPush = vueRouter.prototype.push
@@ -29,36 +25,9 @@ vueRouter.prototype.replace = function (location,resolve,reject) {
 }
 
 export default new vueRouter({
-    routes: [
-        {
-            path:'/home',
-            component:Home,
-            meta:{showFooter:true}
-        },
-        {
-            path: '/login',
-            component: Login,
-            meta:{showFooter:false}
-        },
-        {
-            path: '/register',
-            component: Register,
-            meta:{showFooter:false}
-        },
-        {
-            name:'search',
-            path: '/search/:keyword?',//
-            component: Search,
-            meta:{showFooter:true},
-            props:($route)=>{
-                return{
-                    keyword:$route.params.keyword
-                }
-            }
-        },
-        {
-            path: '*',
-            redirect: '/home'
-        }
-    ]
+    routes,
+    scrollBehavior (to, from, savedPosition) {
+        // return 期望滚动到哪个的位置
+        return {y:0}
+    }
 })

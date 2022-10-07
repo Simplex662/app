@@ -13,7 +13,7 @@ var axiosInstance = axios.create({
     timeout:3000
 });
 
-//请求拦截器，请求之前做一些事
+//请求拦截器，请求之前做一些事：进入条
 axiosInstance.interceptors.request.use(config=>{
     nprogress.start()
     return config
