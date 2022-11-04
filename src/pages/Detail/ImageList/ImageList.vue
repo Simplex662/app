@@ -2,12 +2,11 @@
   <div class="swiper-container" ref="cur">
     <div class="swiper-wrapper">
       <div class="swiper-slide"
-           :class="{active:imgIndex==index}"
            v-for="(skuImage,index) in skuImageList"
            :key="skuImage.id"
            @click="imgActive(index)"
       >
-        <img :src="skuImage.imgUrl">
+        <img :class="{active:imgIndex==index}" :src="skuImage.imgUrl">
       </div>
     </div>
     <div class="swiper-button-next"></div>
@@ -80,6 +79,11 @@
           padding: 1px;
         }
       }
+    }
+
+    .active {
+      border: 2px solid #f60;
+      padding: 1px;
     }
 
     .swiper-button-next {

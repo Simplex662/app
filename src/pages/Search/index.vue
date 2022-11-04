@@ -197,7 +197,7 @@
       //移除分类标签面包屑
       removeSuiTag(){
         //删除 面包屑标签
-        //设置成空字符串会发给后台，但没必要，而值为undefined 不会发个后台
+        //设置成空字符串会发给后台，但没必要，而值为 undefined 不会发个后台
         this.searchParams.categoryName = undefined;
         this.searchParams.category1Id = undefined;
         this.searchParams.category2Id = undefined;

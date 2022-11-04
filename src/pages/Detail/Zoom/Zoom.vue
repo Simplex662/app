@@ -1,11 +1,13 @@
 <template>
   <div class="spec-preview">
-    <img :src="skuImage.imgUrl" />
-    <div class="event"></div>
+    <img :src="skuImage.imgUrl"/>
+    <!-- 事件绑定 -->
+    <div class="event" @mousemove="showBigImg"></div>
     <div class="big">
-      <img :src="skuImage.imgUrl" />
+      <img :src="skuImage.imgUrl" ref="bigImg"/>
     </div>
-    <div class="mask"></div>
+    <!-- 遮盖层 -->
+    <div class="mask" ref="mask"></div>
   </div>
 </template>
 
@@ -14,13 +16,30 @@
     name: "Zoom",
     data(){
       return {
-        currentIndex: 0,
+        currentIndex: 0
       }
     },
     props:['skuImageList'],
     computed:{
       skuImage(){
         return this.skuImageList[this.currentIndex] || {}
+      }
+    },
+    methods:{
+      showBigImg(event){
+        let mask = this.$refs.mask
+        let bigImg = this.$refs.bigImg
+
+        let left = event.offsetX - mask.offsetWidth/2
+        let top  = event.offsetY - mask.offsetHeight/2
+        if (left<0) left = 0;
+        if (left > mask.offsetWidth) left=mask.offsetWidth;
+        if (top < 0) top=0;
+        if (top > mask.offsetHeight) top = mask.offsetHeight;
+        mask.style.left = left+'px';
+        mask.style.top = top+'px';
+        bigImg.style.left = -2 * left + 'px';
+        bigImg.style.top = -2 * top + 'px'
       }
     },
     mounted() {

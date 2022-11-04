@@ -1,9 +1,10 @@
 import Vue from "vue";
-import Vuex from 'vuex'
+import Vuex from 'vuex';
 //引入模块数据
 import homeStore from './home'
 import searchStore from './search';
-import detailStore from './Detail'
+import detailStore from './Detail';
+import shopCart from './ShopCart'
 
 Vue.use(Vuex)
 
@@ -12,6 +13,7 @@ export default new Vuex.Store({
     modules:{
         home:homeStore,
         search:searchStore,
-        detail:detailStore
+        detail:detailStore,
+        shopCart:shopCart
     }
 })

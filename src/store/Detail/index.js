@@ -1,7 +1,10 @@
-import {reqGoodsInfo} from '@/api/index'
+import { reqGoodsInfo,reqAddOrUpdateShopCart } from '@/api/index';
+import {getUUID} from "@/utils/uuid_token";
 
 const state = {
-    goodsInfo:{}
+    goodsInfo:{},
+    //游客的临时id
+    uuid_token:getUUID()
 };
 
 const actions = {
@@ -9,7 +12,14 @@ const actions = {
         let request = await reqGoodsInfo(skuid);
         if (request.code == 200 ){
             context.commit('GETGOODSINFO',request.data);
-            console.log(request);
+        }
+    },
+    async addOrUpdateShopCart(context, {skuId, skuNum}) {
+        let request = await reqAddOrUpdateShopCart(skuId, skuNum);
+        if (request.code==200){
+            return "添加成功";
+        }else{
+            return Promise.reject(new Error("添加失败"))
         }
     }
 };

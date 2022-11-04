@@ -75,12 +75,12 @@
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt">
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
+                <input autocomplete="off" class="itxt" oninput="value=value.replace(/[^\d]/g,'')" v-model="skuNum" @click="changeSkuNum">
+                <button class="plus" @click="skuNum++">+</button>
+                <button class="mins" @click="skuNum>1?skuNum--:skuNum=1">-</button>
               </div>
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <a href="javascript:" @click="addCart">加入购物车</a>
               </div>
             </div>
           </div>
@@ -339,7 +339,8 @@
     name: 'Detail',
     data(){
       return{
-        Active: -1
+        Active: -1,
+        skuNum: 1
       }
     },
     components: {
@@ -370,6 +371,29 @@
         });
         //点击的那个售卖属性值变为1
         saleAttrValue.isChecked = 1;
+      },
+      changeSkuNum(){
+        if (isNaN(this.skuNum)){
+          this.skuNum = 1;
+        }else {
+          this.skuNum = parseInt(this.skuNum);
+        }
+      },
+      async addCart() {
+        try {
+          //成功添加
+          await this.$store.dispatch('detail/addOrUpdateShopCart', {
+            skuId: this.$route.params.skuid,
+            skuNum: this.skuNum
+          });
+          /*
+          * 使用 本地存储（持久保存）|会话存储（保持会话时存储） 存储商品数据
+          * */
+          sessionStorage.setItem("SKUINFO",JSON.stringify(this.skuInfo))
+          this.$router.push({name:'addCartSuccess',query:{skuNum:this.skuNum}});
+        } catch (error) {
+          alert(error.message)
+        }
       }
     }
   }
